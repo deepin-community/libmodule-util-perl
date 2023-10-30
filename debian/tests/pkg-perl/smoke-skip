@@ -1,0 +1,2 @@
+t/99..pod.t
+t/more/01..validate_all_cpan.t
