@@ -1,0 +1,35 @@
+Description: adjust path when run under autopkgtest
+Origin: vendor
+Forwarded: not-needed
+Author: gregor herrmann <gregoa@debian.org>
+Last-Update: 2015-05-30
+
+--- a/t/01..module.t
++++ b/t/01..module.t
+@@ -10,6 +10,8 @@
+     use_ok($module, qw( :all ));
+ }
+ 
++my $moduledir = $ENV{AUTOPKGTEST_TMP} ? '/usr/share/perl5' : 'lib';
++
+ ok(is_valid_module_name($module), 'is_valid_module_name');
+ ok(find_installed($module),       "find_installed");
+ 
+@@ -52,7 +54,7 @@
+ 
+ ok(!find_installed($module, 't/lib'), "Module::Util not found in t/lib");
+ 
+-is(all_installed($module, 'lib'), 1, "Module::Util only found once in lib");
++is(all_installed($module, $moduledir), 1, "Module::Util only found once in lib");
+ is(all_installed("::Invalid"), 0, "::Invalid is not installed at all");
+ 
+ {
+@@ -69,7 +71,7 @@
+     }
+ }
+ 
+-$path = catfile('lib', module_fs_path($module)) || '';
++$path = catfile($moduledir, module_fs_path($module)) || '';
+ ok(-f $path, "'$path' exists");
+ 
+ # path_to_module should fail when given a module name
